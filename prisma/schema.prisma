@@ -32,3 +32,17 @@ model User {
   connections Connection[]
   groups      Group[]
 }
+
+model Connection {
+  id           Int       @id @default(autoincrement())
+  firstUserId  Int
+  secondUserId Int
+  // see 1-to-many and many-to-many with limit of tow
+  firstUser    User      @relation(name: "user1", fields: [firstUserId], references: [id])
+  secondUser   User      @relation(name: "user2", fields: [secondUserId], references: [id])
+  messages     Message[]
+}
+
+model Message {
+  id Int @id @default(autoincrement())
+}
