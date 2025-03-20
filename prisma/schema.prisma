@@ -31,18 +31,36 @@ model User {
   picture     Bytes?
   connections Connection[]
   groups      Group[]
+  messages    Message[]
 }
 
 model Connection {
-  id           Int       @id @default(autoincrement())
-  firstUserId  Int
-  secondUserId Int
+  id       Int       @id @default(autoincrement())
   // see 1-to-many and many-to-many with limit of tow
-  firstUser    User      @relation(name: "user1", fields: [firstUserId], references: [id])
-  secondUser   User      @relation(name: "user2", fields: [secondUserId], references: [id])
-  messages     Message[]
+  users    User[]
+  messages Message[]
+}
+
+model Group {
+  id       Int       @id @default(autoincrement())
+  name     String
+  privet   Boolean
+  picture  Bytes
+  members  User[]
+  messages Message[]
 }
 
 model Message {
-  id Int @id @default(autoincrement())
+  id           Int        @id @default(autoincrement())
+  content      String?
+  authorId     Int
+  author       User       @relation(fields: [authorId], references: [id])
+  connectionId Int
+  connection   Connection @relation(fields: [connectionId], references: [id])
+  gruopId      Int
+  gruop        Group      @relation(fields: [gruopId], references: [id])
+  date         DateTime   @default(now())
+  file         Bytes
 }
+
+//npx prisma migrate dev --name init (to apply schema to database)
